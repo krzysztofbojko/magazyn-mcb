@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Stan Magazynu</h2>
+    <div>
+        <button class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#manageUnitsModal">
+            Jednostki
+        </button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">
+            + Dodaj Produkt
+        </button>
+    </div>
+</div>
+
+<div class="mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="Szukaj produktu (autouzupełnianie)...">
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover" id="productsTable">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nazwa</th>
+                <th>Ilość</th>
+                <th>Jednostka</th>
+                <th>Status</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td><strong>{{ product.name }}</strong></td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.unit.name }}</td>
+                <td>
+                    {% if product.quantity <= product.min_level %} <span class="badge bg-danger">Niski stan</span>
+                        {% else %}
+                        <span class="badge bg-success">OK</span>
+                        {% endif %}
+                </td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#actionModal{{ product.id }}">
+                            Operacje
+                        </button>
+
+                        <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST"
+                            class="d-inline"
+                            onsubmit="return confirm('Czy na pewno chcesz usunąć produkt {{ product.name }}? Zostanie usunięta również jego historia transakcji.');">
+                            <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                        </form>
+                    </div>
+
+                    <!-- Modal Operacji -->
+                    <div class="modal fade" id="actionModal{{ product.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Operacja: {{ product.name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ url_for('transaction') }}" method="POST">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <p>Aktualny stan: <strong>{{ product.quantity }} {{ product.unit.name
+                                                }}</strong></p>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Ilość</label>
+                                            <input type="number" name="amount" class="form-control" min="1" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Rodzaj operacji</label>
+                                            <select name="action" class="form-select">
+                                                <option value="take">Pobierz (Wydanie)</option>
+                                                <option value="restock">Przyjmij (Dostawa)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Anuluj</button>
+                                        <button type="submit" class="btn btn-primary">Zatwierdź</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Dodawania Produktu -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nowy Produkt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('add_product') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nazwa (Automatycznie WIELKIE LITERY)</label>
+                        <input type="text" name="name" class="form-control" style="text-transform:uppercase" required>
+                        <div class="form-text">Nazwa musi być unikalna.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jednostka</label>
+                        <select name="unit_id" class="form-select" required>
+                            {% for unit in units %}
+                            <option value="{{ unit.id }}">{{ unit.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Poziom minimalny (alarm)</label>
+                        <input type="number" name="min_level" class="form-control" value="5">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                    <button type="submit" class="btn btn-success">Dodaj</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Zarządzania Jednostkami -->
+<div class="modal fade" id="manageUnitsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Zarządzaj Jednostkami</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Dostępne jednostki:</h6>
+                <ul>
+                    {% for unit in units %}
+                    <li>{{ unit.name }}</li>
+                    {% endfor %}
+                </ul>
+                <hr>
+                <h6>Dodaj nową:</h6>
+                <form action="{{ url_for('add_unit') }}" method="POST" class="d-flex">
+                    <input type="text" name="name" class="form-control me-2" placeholder="np. para" required>
+                    <button type="submit" class="btn btn-primary">Dodaj</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function () {
+        let filter = this.value.toUpperCase();
+        let rows = document.querySelector("#productsTable tbody").rows;
+
+        for (let i = 0; i < rows.length; i++) {
+            let firstCol = rows[i].cells[1].textContent.toUpperCase();
+            if (firstCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    });
+</script>
+{% endblock %}

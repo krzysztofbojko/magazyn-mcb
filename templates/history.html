@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Historia Transakcji</h2>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Data</th>
+                <th>Użytkownik</th>
+                <th>Produkt</th>
+                <th>Zmiana</th>
+                <th>Typ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trans in transactions %}
+            <tr>
+                <td>{{ trans.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ trans.user.username }}</td>
+                <td>{{ trans.product.name }}</td>
+                <td class="{{ 'text-success' if trans.change_amount > 0 else 'text-danger' }}">
+                    {{ trans.change_amount }} {{ trans.product.unit }}
+                </td>
+                <td>
+                    {% if trans.change_amount > 0 %}
+                    <span class="badge bg-success">Dostawa</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">Wydanie</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
