@@ -39,10 +39,24 @@ Jeśli wolisz używać kontenerów, przygotowaliśmy konfigurację Docker.
 3.  Aplikacja zostanie zbudowana i uruchomiona w tle. Dostępna będzie pod adresem: [http://localhost:5000](http://localhost:5000)
 4.  **Dane są bezpieczne**: Baza danych jest zapisywana w lokalnym katalogu `instance/`, który jest zamontowany do kontenera.
 
-Aby zatrzymać kontenery:
+Aby zatrzymać kontenery (i usunąć je):
 ```bash
 docker-compose down
 ```
+
+Aby wznowić działanie (lub uruchomić ponownie):
+```bash
+docker-compose up -d
+```
+
+### ⚙️ Konfiguracja Portu (Docker)
+Domyślnie aplikacja działa na porcie `5000`. Aby to zmienić (np. na port `80`), edytuj plik `docker-compose.yml`:
+
+```yaml
+ports:
+  - "80:5000"  # Zmień pierwszą liczbę na wybrany port
+```
+Po zmianie uruchom ponownie: `docker-compose up -d`
 
 ## 🔑 Domyślne Dane Logowania
 
