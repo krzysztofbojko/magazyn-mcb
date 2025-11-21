@@ -28,19 +28,6 @@ Prosty, webowy system do zarządzania stanami magazynowymi, dedykowany dla warsz
 > **Uwaga:** Aby zamknąć serwer, w terminalu naciśnij `CTRL + C`.
 
 ## 🐳 Uruchomienie z Dockerem
-
-Jeśli wolisz używać kontenerów, przygotowaliśmy konfigurację Docker.
-
-1.  Upewnij się, że masz zainstalowany **Docker** oraz **Docker Compose**.
-2.  W katalogu projektu uruchom:
-    ```bash
-    docker-compose up -d --build
-    ```
-3.  Aplikacja zostanie zbudowana i uruchomiona w tle. Dostępna będzie pod adresem: [http://localhost:5000](http://localhost:5000)
-4.  **Dane są bezpieczne**: Baza danych jest zapisywana w lokalnym katalogu `instance/`, który jest zamontowany do kontenera.
-
-Aby zatrzymać kontenery (i usunąć je):
-```bash
 docker-compose down
 ```
 
