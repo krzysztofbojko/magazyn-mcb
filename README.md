@@ -16,7 +16,7 @@ Prosty, webowy system do zarządzania stanami magazynowymi, dedykowany dla warsz
     pip install -r requirements.txt
     ```
 
-## ▶️ Uruchomienie
+## ▶️ Uruchomienie (Standardowe)
 
 1.  W terminalu (będąc w katalogu projektu) uruchom komendę:
     ```bash
@@ -26,6 +26,23 @@ Prosty, webowy system do zarządzania stanami magazynowymi, dedykowany dla warsz
 3.  Otwórz przeglądarkę i wejdź na adres: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 > **Uwaga:** Aby zamknąć serwer, w terminalu naciśnij `CTRL + C`.
+
+## 🐳 Uruchomienie z Dockerem
+
+Jeśli wolisz używać kontenerów, przygotowaliśmy konfigurację Docker.
+
+1.  Upewnij się, że masz zainstalowany **Docker** oraz **Docker Compose**.
+2.  W katalogu projektu uruchom:
+    ```bash
+    docker-compose up -d --build
+    ```
+3.  Aplikacja zostanie zbudowana i uruchomiona w tle. Dostępna będzie pod adresem: [http://localhost:5000](http://localhost:5000)
+4.  **Dane są bezpieczne**: Baza danych jest zapisywana w lokalnym katalogu `instance/`, który jest zamontowany do kontenera.
+
+Aby zatrzymać kontenery:
+```bash
+docker-compose down
+```
 
 ## 🔑 Domyślne Dane Logowania
 

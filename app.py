@@ -187,7 +187,7 @@ def delete_product(product_id):
     flash(f'Produkt {product.name} został usunięty (wraz z historią).', 'success')
     return redirect(url_for('dashboard'))
 
-if __name__ == '__main__':
+def init_db():
     with app.app_context():
         db.create_all()
         
@@ -214,5 +214,7 @@ if __name__ == '__main__':
             db.session.add(user)
             db.session.commit()
             print("Utworzono domyślnego pracownika: pracownik / user123")
-            
+
+if __name__ == '__main__':
+    init_db()
     app.run(debug=True, host='0.0.0.0')

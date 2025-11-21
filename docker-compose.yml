@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: magazyn-app
+    ports:
+      - "5000:5000"
+    volumes:
+      # Montujemy katalog instance, aby baza danych (magazyn.db) była trwała
+      # i nie znikała po restarcie kontenera.
+      - ./instance:/app/instance
+    restart: unless-stopped
