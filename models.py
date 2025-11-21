@@ -32,9 +32,9 @@ class Product(db.Model):
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    product_id = db.Column(db.Integer, nullable=True) # Keep ID for reference, but no FK constraint
+    product_name = db.Column(db.String(150), nullable=False) # Store name permanently
     change_amount = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship('User', backref=db.backref('transactions', lazy=True))
-    product = db.relationship('Product', backref=db.backref('transactions', lazy=True))
