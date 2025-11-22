@@ -108,7 +108,7 @@ def transaction():
         final_amount = amount
         product.quantity += amount
         
-    new_trans = Transaction(user_id=current_user.id, product_id=product.id, change_amount=final_amount)
+    new_trans = Transaction(user_id=current_user.id, product_id=product.id, product_name=product.name, change_amount=final_amount)
     db.session.add(new_trans)
     db.session.commit()
     
@@ -178,8 +178,7 @@ def change_password():
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
     
-    # Najpierw usuwamy historię transakcji tego produktu, aby uniknąć błędów klucza obcego
-    Transaction.query.filter_by(product_id=product.id).delete()
+    # Nie usuwamy historii transakcji - ma zostać jako log
     
     db.session.delete(product)
     db.session.commit()
