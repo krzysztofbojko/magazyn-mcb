@@ -1,34 +1,69 @@
-*   **Wyszukiwanie**: Wpisz nazwę produktu w polu nad tabelą, aby filtrować listę na żywo.
-*   **Dodawanie Produktu**: Kliknij zielony przycisk `+ Dodaj Produkt`.
-    *   Nazwy produktów są automatycznie zamieniane na **WIELKIE LITERY** (np. "śruby" -> "ŚRUBY").
-    *   Możesz zdefiniować "Poziom minimalny" - gdy stan spadnie poniżej tej wartości, w tabeli pojawi się ostrzeżenie "Niski stan".
-*   **Jednostki**: Kliknij `Jednostki`, aby dodać nowe miary (np. kpl, m2, szt).
-*   **Usuwanie**: Kliknij czerwony przycisk `Usuń` przy produkcie, aby trwale usunąć go z bazy (wymaga potwierdzenia). **Uwaga:** Usuwa to również historię operacji tego produktu!
+# System Magazynowy (WMS)
 
-### 2. Operacje Magazynowe (Pobierz / Przyjmij)
-Aby zmienić stan magazynowy, kliknij niebieski przycisk `Operacje` przy danym produkcie.
+Prosty i intuicyjny system do zarządzania stanami magazynowymi, stworzony z myślą o warsztatach i małych firmach. Aplikacja umożliwia śledzenie stanów, rejestrowanie przyjęć i wydań oraz zarządzanie użytkownikami.
 
-*   **Pobierz (Wydanie)**: Zmniejsza stan magazynowy. Użyj tego, gdy zabierasz towar z magazynu. System nie pozwoli pobrać więcej niż jest na stanie.
-*   **Przyjmij (Dostawa)**: Zwiększa stan magazynowy. Użyj tego, gdy przychodzi nowa dostawa.
+## 🚀 Szybki Start (Docker)
+
+To zalecany sposób uruchomienia. Wymaga zainstalowanego **Docker** oraz **Docker Compose v2**.
+
+1. **Pobierz kod:**
+   ```bash
+   git clone https://github.com/krzysztofbojko/magazyn-mcb.git
+   cd magazyn-mcb
+   ```
+
+2. **Uruchom aplikację:**
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. **Gotowe!** Aplikacja jest dostępna pod adresem:
+   👉 [http://localhost:5000](http://localhost:5000)
+
+## 📦 Instalacja Ręczna (Python)
+
+Jeśli nie używasz Dockera, potrzebujesz **Python 3.9+**.
+
+1. Zainstaluj zależności:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Uruchom serwer:
+   ```bash
+   python app.py
+   ```
+
+## 🔑 Domyślne Konta
+
+System generuje automatycznie dwóch użytkowników przy pierwszym uruchomieniu:
+
+| Rola | Login | Hasło | Uprawnienia |
+| :--- | :--- | :--- | :--- |
+| **Administrator** | `admin` | `admin123` | Pełny dostęp + Zarządzanie użytkownikami |
+| **Pracownik** | `pracownik` | `user123` | Obsługa magazynu (bez panelu admina) |
+
+## 📖 Instrukcja Obsługi
+
+### 1. Magazyn (Dashboard)
+Główny widok przedstawia listę wszystkich produktów.
+- **Dodawanie**: Kliknij `+ Dodaj Produkt`. Nazwy są automatycznie formatowane na WIELKIE LITERY.
+- **Wyszukiwanie**: Użyj pola nad tabelą, aby błyskawicznie filtrować listę.
+- **Jednostki**: Możesz definiować własne jednostki miary (szt, kg, m, itp.).
+- **Usuwanie**: Możesz usunąć produkt, ale **historia jego transakcji pozostanie w systemie**.
+
+### 2. Operacje (Przyjęcia i Wydania)
+Aby zmienić stan magazynowy, kliknij przycisk `Operacje` przy wybranym produkcie.
+- **Pobierz**: Zmniejsza stan (wydanie towaru). System nie pozwoli wydać więcej niż jest na stanie.
+- **Przyjmij**: Zwiększa stan (dostawa towaru).
 
 ### 3. Historia
-Zakładka `Historia` w menu górnym pokazuje rejestr wszystkich działań.
-*   Możesz sprawdzić **kto**, **co**, **ile** i **kiedy** pobrał lub przyjął.
-*   Wydania są oznaczone na czerwono, dostawy na zielono.
+Pełny, niezmienialny rejestr zdarzeń. Każda operacja zapisuje:
+- Datę i czas.
+- Użytkownika wykonującego akcję.
+- Nazwę produktu (zachowaną nawet po jego usunięciu).
+- Ilość i typ operacji (Dostawa/Wydanie).
 
-### 4. Zarządzanie Użytkownikami (Tylko Admin)
-Zakładka `Użytkownicy` jest widoczna tylko dla Administratora.
-*   **Dodawanie użytkownika**: Możesz stworzyć nowe konto dla pracownika lub innego administratora.
-*   **Zmiana hasła**: Jeśli pracownik zapomni hasła, tutaj możesz ustawić mu nowe.
-
-## 🛠️ Rozwiązywanie Problemów
-
-**Problem: Błąd "no such column" lub błąd bazy danych po aktualizacji.**
-*   **Rozwiązanie**:
-    1. Zatrzymaj serwer (`CTRL + C`).
-    2. Wejdź do katalogu `instance` w folderze projektu.
-    3. Usuń plik `magazyn.db`.
-    4. Uruchom serwer ponownie (`python app.py`). Baza zostanie utworzona na nowo (dane zostaną wyczyszczone!).
-
-**Problem: Nie mogę się zalogować.**
-*   **Rozwiązanie**: Upewnij się, że używasz poprawnych wielkości liter. Jeśli zapomniałeś hasła admina, usuń plik bazy danych (jak wyżej) - hasło zresetuje się do `admin123`.
+### 4. Panel Administratora
+Dostępny tylko dla konta `admin` w zakładce **Użytkownicy**.
+- Dodawanie nowych pracowników.
+- Resetowanie haseł użytkownikom.
