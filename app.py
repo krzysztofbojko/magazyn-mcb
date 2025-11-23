@@ -108,7 +108,13 @@ def transaction():
         final_amount = amount
         product.quantity += amount
         
-    new_trans = Transaction(user_id=current_user.id, product_id=product.id, product_name=product.name, change_amount=final_amount)
+    new_trans = Transaction(
+        user_id=current_user.id, 
+        product_id=product.id, 
+        product_name=product.name, 
+        change_amount=final_amount,
+        type=action # 'take' or 'restock'
+    )
     db.session.add(new_trans)
     db.session.commit()
     
@@ -178,7 +184,15 @@ def change_password():
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
     
-    # Nie usuwamy historii transakcji - ma zostać jako log
+    # Log deletion transaction
+    new_trans = Transaction(
+        user_id=current_user.id,
+        product_id=product.id,
+        product_name=product.name,
+        change_amount=-product.quantity,
+        type='delete'
+    )
+    db.session.add(new_trans)
     
     db.session.delete(product)
     db.session.commit()

@@ -35,6 +35,7 @@ class Transaction(db.Model):
     product_id = db.Column(db.Integer, nullable=True) # Keep ID for reference, but no FK constraint
     product_name = db.Column(db.String(150), nullable=False) # Store name permanently
     change_amount = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.String(20), default='restock') # 'restock', 'take', 'delete'
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship('User', backref=db.backref('transactions', lazy=True))
