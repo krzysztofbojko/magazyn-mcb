@@ -1,6 +1,9 @@
 # Używamy lekkiego obrazu Pythona
 FROM python:3.9-slim
 
+# Install tzdata for timezone support
+RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
+
 # Ustawiamy katalog roboczy
 WORKDIR /app
 
@@ -11,8 +14,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Kopiujemy resztę kodu aplikacji
 COPY . .
 
-# Tworzymy katalog na bazę danych (jeśli nie istnieje)
-RUN mkdir -p instance
+# Create a non-root user
+RUN useradd -m appuser
+
+# Create instance directory and set permissions
+RUN mkdir -p instance && chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
 
 # Eksponujemy port 5000
 EXPOSE 5000

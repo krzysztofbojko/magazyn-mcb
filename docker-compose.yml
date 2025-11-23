@@ -9,4 +9,6 @@ services:
       # Montujemy katalog instance, aby baza danych (magazyn.db) była trwała
       # i nie znikała po restarcie kontenera.
       - ./instance:/app/instance
+    environment:
+      - TZ=Europe/Warsaw
     restart: unless-stopped

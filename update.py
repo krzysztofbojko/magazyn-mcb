@@ -37,6 +37,9 @@ def main():
         sys.exit(1)
     
     print("\nUpdate completed successfully!")
+    print("\n[WAŻNE] Jeśli masz problemy z uprawnieniami (baza read-only), uruchom:")
+    print("sudo chown -R $USER:$USER instance")
+    print("Następnie przebuduj kontener: docker-compose up -d --build")
 
 if __name__ == "__main__":
     main()
