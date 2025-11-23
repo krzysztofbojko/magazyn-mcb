@@ -1,4 +1,4 @@
-# System Magazynowy (WMS)
+# ProstyProgramMagazynowy (WMS)
 
 Prosty i intuicyjny system do zarządzania stanami magazynowymi, stworzony z myślą o warsztatach i małych firmach. Aplikacja umożliwia śledzenie stanów, rejestrowanie przyjęć i wydań oraz zarządzanie użytkownikami.
 
