@@ -18,50 +18,30 @@
             {% for trans in transactions %}
             <tr>
                 <td>{{ trans.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                {% extends "base.html" %}
-
-                {% block content %}
-                <h2 class="mb-4">Historia Transakcji</h2>
-
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Data</th>
-                                <th>Użytkownik</th>
-                                <th>Produkt</th>
-                                <th>Zmiana</th>
-                                <th>Typ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for trans in transactions %}
-                            <tr>
-                                <td>{{ trans.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                                <td>{{ trans.user.username }}</td>
-                                <td>{{ trans.product_name }}</td>
-                                <td class="{{ 'text-success' if trans.change_amount > 0 else 'text-danger' }}">
-                                    {{ trans.change_amount }}
-                                </td>
-                                <td>
-                                    {% if trans.type == 'restock' %}
-                                    <span class="badge bg-success">Dostawa</span>
-                                    {% elif trans.type == 'take' %}
-                                    <span class="badge bg-warning text-dark">Wydanie</span>
-                                    {% elif trans.type == 'delete' %}
-                                    <span class="badge bg-danger">Usunięcie</span>
-                                    {% else %}
-                                    <!-- Fallback for old data if migration didn't run or custom types -->
-                                    {% if trans.change_amount > 0 %}
-                                    <span class="badge bg-success">Dostawa</span>
-                                    {% else %}
-                                    <span class="badge bg-warning text-dark">Wydanie</span>
-                                    {% endif %}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% endblock %}
+                <td>{{ trans.user.username }}</td>
+                <td>{{ trans.product_name }}</td>
+                <td class="{{ 'text-success' if trans.change_amount > 0 else 'text-danger' }}">
+                    {{ trans.change_amount }}
+                </td>
+                <td>
+                    {% if trans.type == 'restock' %}
+                    <span class="badge bg-success">Dostawa</span>
+                    {% elif trans.type == 'take' %}
+                    <span class="badge bg-warning text-dark">Wydanie</span>
+                    {% elif trans.type == 'delete' %}
+                    <span class="badge bg-danger">Usunięcie</span>
+                    {% else %}
+                    <!-- Fallback for old data if migration didn't run or custom types -->
+                    {% if trans.change_amount > 0 %}
+                    <span class="badge bg-success">Dostawa</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">Wydanie</span>
+                    {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
