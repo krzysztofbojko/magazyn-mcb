@@ -127,6 +127,15 @@ def history():
     transactions = Transaction.query.order_by(Transaction.timestamp.desc()).all()
     return render_template('history.html', transactions=transactions)
 
+@app.route('/license')
+def license_page():
+    try:
+        with open('LICENSE.txt', 'r', encoding='utf-8') as f:
+            license_text = f.read()
+    except FileNotFoundError:
+        license_text = "Plik licencji nie został znaleziony."
+    return render_template('license.html', license_text=license_text)
+
 # --- USER MANAGEMENT (ADMIN ONLY) ---
 
 @app.route('/users')

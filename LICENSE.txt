@@ -1,0 +1,48 @@
+---------------------------------------------------------------------------
+LICENCJA UŻYTKOWANIA (PL)
+---------------------------------------------------------------------------
+
+Program: ProstyProgramMagazynowy
+Autor: Krzysztof Bojko
+Rok: 2025
+
+1. UŻYTEK OSOBISTY
+   Korzystanie z tego oprogramowania, kopiowanie go i modyfikowanie
+   wyłącznie do celów osobistych i domowych jest DARMOWE.
+
+2. POZOSTAŁE ZASTOSOWANIA (KOMERCYJNE I INNE)
+   Używanie tego oprogramowania w celach innych niż osobiste (w tym
+   w firmach, organizacjach, edukacji, do testów lub zarobkowo)
+   jest ZABRONIONE bez wyraźnej, pisemnej zgody autora.
+
+   Aby uzyskać licencję, proszę o kontakt:
+   krzysztof.bojko@gmail.com
+
+3. BRAK GWARANCJI
+   Oprogramowanie jest dostarczane "takie, jakie jest" (as is), bez
+   jakiejkolwiek gwarancji. Autor nie ponosi odpowiedzialności za
+   ewentualne szkody wynikłe z jego użytkowania.
+
+---------------------------------------------------------------------------
+LICENSE AGREEMENT (EN)
+---------------------------------------------------------------------------
+
+Software: ProstyProgramMagazynowy
+Author: Krzysztof Bojko
+Year: 2025
+
+1. PERSONAL USE
+   Using, copying, and modifying this software strictly for personal
+   and home purposes is FREE of charge.
+
+2. OTHER USES (COMMERCIAL AND OTHERS)
+   Use of this software for purposes other than personal (including
+   companies, organizations, education, testing, or for profit)
+   is PROHIBITED without explicit, written permission from the author.
+
+   To obtain a license, please contact:
+   krzysztof.bojko@gmail.com
+
+3. NO WARRANTY
+   The software is provided "as is", without warranty of any kind.
+   The author is not liable for any damages arising from its use.

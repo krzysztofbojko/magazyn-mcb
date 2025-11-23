@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h3>Licencja Użytkowania</h3>
+        </div>
+        <div class="card-body">
+            <pre style="white-space: pre-wrap; font-family: monospace;">{{ license_text }}</pre>
+        </div>
+        <div class="card-footer text-center">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Powrót do strony głównej</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
