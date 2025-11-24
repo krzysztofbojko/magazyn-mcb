@@ -30,91 +30,130 @@
                 <th>Akcje</th>
             </tr>
         </thead>
-        class="d-inline"
-        onsubmit="return confirm('Czy na pewno chcesz usunąć produkt {{ product.name }}? Zostanie usunięta również jego
-        historia transakcji.');">
-        <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
-        </form>
-</div>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td><strong>{{ product.name }}</strong></td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.unit.name }}</td>
+                <td>
+                    {% if product.owners_all %}
+                    <span class="badge bg-info text-dark">Wszyscy</span>
+                    {% else %}
+                    {% for owner in product.owners %}
+                    <span class="badge bg-secondary">{{ owner.username }}</span>
+                    {% endfor %}
+                    {% endif %}
+                    {% if current_user.role == 'admin' or current_user in product.owners %}
+                    <button class="btn btn-sm btn-link" data-bs-toggle="modal"
+                        data-bs-target="#editOwnersModal{{ product.id }}">
+                        <i class="bi bi-pencil"></i> Edytuj
+                    </button>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if product.quantity <= product.min_level %} <span class="badge bg-danger">Niski stan</span>
+                        {% else %}
+                        <span class="badge bg-success">OK</span>
+                        {% endif %}
+                </td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#actionModal{{ product.id }}">
+                            Operacje
+                        </button>
 
-<!-- Modal Operacji -->
-<div class="modal fade" id="actionModal{{ product.id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Operacja: {{ product.name }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="{{ url_for('transaction') }}" method="POST">
-                <div class="modal-body">
-                    <input type="hidden" name="product_id" value="{{ product.id }}">
-                    <p>Aktualny stan: <strong>{{ product.quantity }} {{ product.unit.name
-                            }}</strong></p>
-
-                    <div class="mb-3">
-                        <label class="form-label">Ilość</label>
-                        <input type="number" name="amount" class="form-control" min="0.01" step="0.01" required>
+                        <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST"
+                            class="d-inline"
+                            onsubmit="return confirm('Czy na pewno chcesz usunąć produkt {{ product.name }}? Zostanie usunięta również jego historia transakcji.');">
+                            <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                        </form>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Rodzaj operacji</label>
-                        <select name="action" class="form-select">
-                            <option value="take">Pobierz (Wydanie)</option>
-                            <option value="restock">Przyjmij (Dostawa)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-                    <button type="submit" class="btn btn-primary">Zatwierdź</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+                    <!-- Modal Operacji -->
+                    <div class="modal fade" id="actionModal{{ product.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Operacja: {{ product.name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ url_for('transaction') }}" method="POST">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <p>Aktualny stan: <strong>{{ product.quantity }} {{ product.unit.name
+                                                }}</strong></p>
 
-<!-- Modal Edycji Właścicieli -->
-<div class="modal fade" id="editOwnersModal{{ product.id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edytuj właścicieli: {{ product.name }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="{{ url_for('edit_product_owners') }}" method="POST">
-                <div class="modal-body">
-                    <input type="hidden" name="product_id" value="{{ product.id }}">
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" name="owners_all" id="ownersAll{{ product.id }}"
-                            {% if product.owners_all %}checked{% endif %}>
-                        <label class="form-check-label" for="ownersAll{{ product.id }}">
-                            Wszyscy pracownicy
-                        </label>
+                                        <div class="mb-3">
+                                            <label class="form-label">Ilość</label>
+                                            <input type="number" name="amount" class="form-control" min="0.01"
+                                                step="0.01" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Rodzaj operacji</label>
+                                            <select name="action" class="form-select">
+                                                <option value="take">Pobierz (Wydanie)</option>
+                                                <option value="restock">Przyjmij (Dostawa)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Anuluj</button>
+                                        <button type="submit" class="btn btn-primary">Zatwierdź</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Wybierz właścicieli (jeśli nie wszyscy)</label>
-                        <select name="owners" class="form-select" multiple size="5">
-                            {% for user in users %}
-                            <option value="{{ user.id }}" {% if user in product.owners %}selected{% endif %}>{{
-                                user.username }}</option>
-                            {% endfor %}
-                        </select>
-                        <div class="form-text">Przytrzymaj Ctrl, aby wybrać wielu.</div>
+
+                    <!-- Modal Edycji Właścicieli -->
+                    <div class="modal fade" id="editOwnersModal{{ product.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edytuj właścicieli: {{ product.name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ url_for('edit_product_owners') }}" method="POST">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="owners_all"
+                                                id="ownersAll{{ product.id }}" {% if product.owners_all %}checked{%
+                                                endif %}>
+                                            <label class="form-check-label" for="ownersAll{{ product.id }}">
+                                                Wszyscy pracownicy
+                                            </label>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Wybierz właścicieli (jeśli nie wszyscy)</label>
+                                            <select name="owners" class="form-select" multiple size="5">
+                                                {% for user in users %}
+                                                <option value="{{ user.id }}" {% if user in product.owners %}selected{%
+                                                    endif %}>{{ user.username }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="form-text">Przytrzymaj Ctrl, aby wybrać wielu.</div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Anuluj</button>
+                                        <button type="submit" class="btn btn-primary">Zapisz</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-                    <button type="submit" class="btn btn-primary">Zapisz</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <!-- Modal Dodawania Produktu -->
