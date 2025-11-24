@@ -50,7 +50,8 @@ def logout():
 def dashboard():
     products = Product.query.all()
     units = Unit.query.all()
-    return render_template('dashboard.html', products=products, units=units)
+    users = User.query.all()
+    return render_template('dashboard.html', products=products, units=units, users=users)
 
 @app.route('/add_unit', methods=['POST'])
 @login_required
@@ -74,21 +75,53 @@ def add_product():
     unit_id = request.form.get('unit_id')
     min_level = request.form.get('min_level', 5)
     
+    owners_all = request.form.get('owners_all') == 'on'
+    owner_ids = request.form.getlist('owners')
+    
     if Product.query.filter_by(name=name).first():
         flash(f'Produkt "{name}" już istnieje!', 'danger')
         return redirect(url_for('dashboard'))
 
-    new_product = Product(name=name, unit_id=unit_id, min_level=min_level)
+    new_product = Product(name=name, unit_id=unit_id, min_level=min_level, owners_all=owners_all)
+    
+    if not owners_all:
+        for user_id in owner_ids:
+            user = User.query.get(int(user_id))
+            if user:
+                new_product.owners.append(user)
+
     db.session.add(new_product)
     db.session.commit()
     flash(f'Dodano nowy produkt: {name}', 'success')
+    return redirect(url_for('dashboard'))
+
+@app.route('/edit_product_owners', methods=['POST'])
+@login_required
+def edit_product_owners():
+    product_id = request.form.get('product_id')
+    product = Product.query.get_or_404(product_id)
+    
+    owners_all = request.form.get('owners_all') == 'on'
+    owner_ids = request.form.getlist('owners')
+    
+    product.owners_all = owners_all
+    product.owners = [] # Clear existing
+    
+    if not owners_all:
+        for user_id in owner_ids:
+            user = User.query.get(int(user_id))
+            if user:
+                product.owners.append(user)
+                
+    db.session.commit()
+    flash(f'Zaktualizowano właścicieli produktu {product.name}.', 'success')
     return redirect(url_for('dashboard'))
 
 @app.route('/transaction', methods=['POST'])
 @login_required
 def transaction():
     product_id = request.form.get('product_id')
-    amount = int(request.form.get('amount'))
+    amount = float(request.form.get('amount'))
     action = request.form.get('action') # 'take' or 'restock'
     
     product = Product.query.get(product_id)

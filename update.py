@@ -30,6 +30,16 @@ def main():
     
     # 3. Run database migration
     print("--- Running database migration ---")
+    
+    # Backup database
+    if os.path.exists(os.path.join('instance', 'magazyn.db')):
+        import shutil
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_file = os.path.join('instance', f'magazyn_backup_{timestamp}.db')
+        print(f"Tworzenie kopii zapasowej bazy danych: {backup_file}")
+        shutil.copy2(os.path.join('instance', 'magazyn.db'), backup_file)
+
     if os.path.exists('migrate.py'):
         run_command(f"{sys.executable} migrate.py")
     else:

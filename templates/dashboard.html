@@ -25,6 +25,7 @@
                 <th>Nazwa</th>
                 <th>Ilość</th>
                 <th>Jednostka</th>
+                <th>Właściciel</th>
                 <th>Status</th>
                 <th>Akcje</th>
             </tr>
@@ -36,6 +37,19 @@
                 <td><strong>{{ product.name }}</strong></td>
                 <td>{{ product.quantity }}</td>
                 <td>{{ product.unit.name }}</td>
+                <td>
+                    {% if product.owners_all %}
+                    <span class="badge bg-info text-dark">Wszyscy</span>
+                    {% else %}
+                    {% for owner in product.owners %}
+                    <span class="badge bg-secondary">{{ owner.username }}</span>
+                    {% endfor %}
+                    {% endif %}
+                    <button class="btn btn-sm btn-link" data-bs-toggle="modal"
+                        data-bs-target="#editOwnersModal{{ product.id }}">
+                        <i class="bi bi-pencil"></i> Edytuj
+                    </button>
+                </td>
                 <td>
                     {% if product.quantity <= product.min_level %} <span class="badge bg-danger">Niski stan</span>
                         {% else %}
@@ -72,7 +86,8 @@
 
                                         <div class="mb-3">
                                             <label class="form-label">Ilość</label>
-                                            <input type="number" name="amount" class="form-control" min="1" required>
+                                            <input type="number" name="amount" class="form-control" min="0.01"
+                                                step="0.01" required>
                                         </div>
 
                                         <div class="mb-3">
@@ -87,6 +102,46 @@
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Anuluj</button>
                                         <button type="submit" class="btn btn-primary">Zatwierdź</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Edycji Właścicieli -->
+                    <div class="modal fade" id="editOwnersModal{{ product.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edytuj właścicieli: {{ product.name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ url_for('edit_product_owners') }}" method="POST">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="owners_all"
+                                                id="ownersAll{{ product.id }}" {% if product.owners_all %}checked{%
+                                                endif %}>
+                                            <label class="form-check-label" for="ownersAll{{ product.id }}">
+                                                Wszyscy pracownicy
+                                            </label>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Wybierz właścicieli (jeśli nie wszyscy)</label>
+                                            <select name="owners" class="form-select" multiple size="5">
+                                                {% for user in users %}
+                                                <option value="{{ user.id }}" {% if user in product.owners %}selected{%
+                                                    endif %}>{{ user.username }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="form-text">Przytrzymaj Ctrl, aby wybrać wielu.</div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Anuluj</button>
+                                        <button type="submit" class="btn btn-primary">Zapisz</button>
                                     </div>
                                 </form>
                             </div>
@@ -125,6 +180,21 @@
                     <div class="mb-3">
                         <label class="form-label">Poziom minimalny (alarm)</label>
                         <input type="number" name="min_level" class="form-control" value="5">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="owners_all" id="addOwnersAll">
+                        <label class="form-check-label" for="addOwnersAll">
+                            Wszyscy pracownicy
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Wybierz właścicieli (jeśli nie wszyscy)</label>
+                        <select name="owners" class="form-select" multiple size="5">
+                            {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Przytrzymaj Ctrl, aby wybrać wielu.</div>
                     </div>
                 </div>
                 <div class="modal-footer">
