@@ -101,6 +101,11 @@ def edit_product_owners():
     product_id = request.form.get('product_id')
     product = Product.query.get_or_404(product_id)
     
+    # Permission check: Admin or Owner
+    if current_user.role != 'admin' and current_user not in product.owners:
+        flash('Brak uprawnień do edycji właścicieli.', 'danger')
+        return redirect(url_for('dashboard'))
+    
     owners_all = request.form.get('owners_all') == 'on'
     owner_ids = request.form.getlist('owners')
     

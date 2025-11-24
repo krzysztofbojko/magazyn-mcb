@@ -38,25 +38,6 @@
                 <td>{{ product.quantity }}</td>
                 <td>{{ product.unit.name }}</td>
                 <td>
-                    {% if product.owners_all %}
-                    <span class="badge bg-info text-dark">Wszyscy</span>
-                    {% else %}
-                    {% for owner in product.owners %}
-                    <span class="badge bg-secondary">{{ owner.username }}</span>
-                    {% endfor %}
-                    {% endif %}
-                    <button class="btn btn-sm btn-link" data-bs-toggle="modal"
-                        data-bs-target="#editOwnersModal{{ product.id }}">
-                        <i class="bi bi-pencil"></i> Edytuj
-                    </button>
-                </td>
-                <td>
-                    {% if product.quantity <= product.min_level %} <span class="badge bg-danger">Niski stan</span>
-                        {% else %}
-                        <span class="badge bg-success">OK</span>
-                        {% endif %}
-                </td>
-                <td>
                     <div class="d-flex gap-2">
                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#actionModal{{ product.id }}">
