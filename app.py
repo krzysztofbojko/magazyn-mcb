@@ -131,6 +131,11 @@ def transaction():
     
     final_amount = 0
     if action == 'take':
+        # Check ownership
+        if not product.owners_all and current_user not in product.owners:
+            flash('Brak uprawnień. Tylko właściciel może pobrać ten towar.', 'danger')
+            return redirect(url_for('dashboard'))
+
         if product.quantity < amount:
             flash('Niewystarczająca ilość na stanie!', 'danger')
             return redirect(url_for('dashboard'))
